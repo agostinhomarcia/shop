@@ -56,8 +56,7 @@ The following tools were used in this project:
 - [Nextjs](https://pt-br.nextjs.org/)
 - [TypeScript](https://www.w3schools.com/typescript/)
 - [React](https://pt-br.reactjs.org/)
-- [TailwindCss](https://tailwindcss.com/docs/)
-- [Firebase](https://firebase.google.com/)
+- [Stripe](https://stripe.com/)
 
 ## :white_check_mark: Requirements
 
