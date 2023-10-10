@@ -11,6 +11,8 @@ import {
   ProductDetails,
 } from "../../styles/pages/product";
 
+import { useShoppingCart } from "use-shopping-cart";
+
 interface ProductProps {
   product: {
     id: string;
@@ -23,6 +25,10 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps) {
+  const [quanty, setQuanty] = useState(0);
+  const [cart, setCart] = useState([]);
+  const [cartTotal, setCartTotal] = useState(0);
+
   const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
     useState(false);
 
@@ -32,6 +38,7 @@ export default function Product({ product }: ProductProps) {
 
       const response = await axios.post("/api/checkout", {
         priceId: product.defaultPriceId,
+        quantity: quanty,
       });
 
       const { checkoutUrl } = response.data;
@@ -42,6 +49,60 @@ export default function Product({ product }: ProductProps) {
 
       alert("Falha ao redirecionar ao checkout!");
     }
+  }
+  function increaseQuantity() {
+    setQuanty((prevState) => prevState + 1);
+  }
+
+  function decreaseQuantity() {
+    setQuanty((prevState) => prevState - 1);
+  }
+
+  function addToCart() {
+    if (quanty > 0) {
+      const newItem = {
+        id: product.id,
+        product: product,
+        quantity: quanty,
+        total:
+          quanty *
+          parseFloat(product.price.replace("R$", "").replace(",", ".")),
+      };
+
+      setCart([...cart, newItem]);
+      setCartTotal((prevTotal) => prevTotal + newItem.total);
+      setQuanty(0);
+    }
+  }
+
+  function modifyCartItem(productId, action) {
+    const updatedCart = [...cart];
+    const itemIndex = updatedCart.findIndex((item) => item.id === productId);
+
+    if (itemIndex === -1) {
+      return;
+    }
+
+    const item = updatedCart[itemIndex];
+
+    if (action === "remove") {
+      const removedItem = updatedCart.splice(itemIndex, 1)[0];
+      setCartTotal((prevTotal) => prevTotal - removedItem.total);
+    } else if (action === "decrease") {
+      if (item.quantity > 1) {
+        item.quantity -= 1;
+        item.total -= parseFloat(
+          product.price.replace("R$", "").replace(",", ".")
+        );
+        setCartTotal(
+          (prevTotal) =>
+            prevTotal -
+            parseFloat(product.price.replace("R$", "").replace(",", "."))
+        );
+      }
+    }
+
+    setCart(updatedCart);
   }
 
   return (
@@ -60,6 +121,8 @@ export default function Product({ product }: ProductProps) {
           <span>{product.price}</span>
 
           <p>{product.description}</p>
+          <span>{quanty}</span>
+          <button onClick={increaseQuantity}>+</button>
 
           <button
             disabled={isCreatingCheckoutSession}
@@ -67,6 +130,21 @@ export default function Product({ product }: ProductProps) {
           >
             Comprar agora
           </button>
+          <button onClick={addToCart} className="btn">
+            Adicionar ao Carrinho
+          </button>
+          <div>
+            Valor Total do Carrinho: R$ {cartTotal.toFixed(2)}{" "}
+            {cart.map((item) => (
+              <div key={item.id}>
+                <p>Total: R$ {item.total.toFixed(2)}</p>
+                <button onClick={decreaseQuantity}>-</button>
+                <button onClick={() => modifyCartItem(item.id, "remove")}>
+                  Remover
+                </button>
+              </div>
+            ))}
+          </div>
         </ProductDetails>
       </ProductContainer>
     </>
