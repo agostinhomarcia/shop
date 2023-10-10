@@ -40,8 +40,20 @@
 <h4 align="center"> Shop </h4>
 
 <p align="center">
-   <!-- <img src="https://media.giphy.com/media/wMHs23gzGAokk92GqE/giphy.gif" alt="feedback" width="690"/> -->
+     <img src="src/assets/home.png" alt="shop" width="690"/>
+ <hr>    
+   <img src="src/assets/cart.png" alt="shop" width="690"/>
 </p>
+
+<hr>
+
+Implementar um carrinho que utilizará os dados da API do Stripe para buscar os itens existentes, e controlar, através da sua aplicação, o número de itens que a pessoa deseja comprar.
+
+- Você utilizará a listagem já criada pela aplicação, mas adicionará a possibilidade de adicionar aquele item ao carrinho na página do produto.
+- Salvar todos os itens selecionados em sua aplicação, e exibir o número de itens no carrinho
+- Enviar o carrinho que você armazenou na aplicação para a rota de checkout, onde irá gerar a sessão de checkout com os `line_items` necessários.
+
+<hr>
 
 ## :sparkles: Features
 
